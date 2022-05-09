@@ -3,8 +3,9 @@
 import atexit
 from setuptools import setup, find_packages
 from setuptools.command.install import install
+import os
 import glob
-
+import stat
 
 HOOK = """#!/bin/sh
 # Redirect output to stderr.
@@ -40,7 +41,8 @@ def hi():
     assert len(path_list) == 1, 'Could not find path for hook'
     with open(path_list[0] + '/prepare-commit-msg', 'w') as f:
         f.write(HOOK + '\n')
-        print('hi there you')
+        os.system('''chmod a+x {path_list[0] + 'prepare-commit-msg'} ''')
+        # os.chmod(f, stat.S_IRWXU)
 
 setup(name='gitcommitted',
       cmdclass={'install': new_install},
